@@ -112,9 +112,15 @@ export default function AdminPage() {
       setStats({
         bookings: {
           total: bookings.length,
-          confirmed: bookings.filter((b) => ["confirmado", "confirmed"].includes(b.status)).length,
-          pending: bookings.filter((b) => ["pendente", "pending"].includes(b.status)).length,
-          cancelled: bookings.filter((b) => ["cancelado", "cancelled"].includes(b.status)).length,
+          confirmed: bookings.filter((b) =>
+            ["confirmado", "confirmed"].includes(b.status ?? "")
+          ).length,
+          pending: bookings.filter((b) =>
+            ["pendente", "pending"].includes(b.status ?? "")
+          ).length,
+          cancelled: bookings.filter((b) =>
+            ["cancelado", "cancelled"].includes(b.status ?? "")
+          ).length,
         },
         trips: {
           total: trips.length,
@@ -333,7 +339,7 @@ export default function AdminPage() {
         </div>
       </div>
 
-      
+
 
       {/* User info */}
       {user && (
