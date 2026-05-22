@@ -141,11 +141,11 @@ async function AdminAuthCheck({ children }: { children: React.ReactNode }) {
 
     return <>{children}</>;
   } catch (error) {
-  if (error instanceof Error && (error as any).digest?.startsWith("NEXT_REDIRECT")) {
-    throw error; // ✅ deixa o redirect passar
-  }
-  console.error("Admin auth check error:", error);
-  redirect("/auth/login");
+    if (error instanceof Error && (error as any).digest?.startsWith("NEXT_REDIRECT")) {
+      throw error;
+    }
+    console.error("Admin auth check error:", error);
+    redirect("/auth/login");
   }
 }
 
