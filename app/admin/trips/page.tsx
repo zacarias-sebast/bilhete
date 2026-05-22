@@ -20,6 +20,7 @@ import {
   Download,
   Eye,
   Plus,
+  Edit,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -361,7 +362,8 @@ export default function AdminTripsPage() {
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
-          <div className="overflow-x-auto">
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="border-b border-white/10 bg-white/5">
@@ -483,6 +485,105 @@ export default function AdminTripsPage() {
                 )}
               </tbody>
             </table>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="md:hidden space-y-3 p-4">
+            {filteredTrips.length === 0 ? (
+              <div className="text-center py-8 text-slate-400">
+                Nenhuma viagem encontrada
+              </div>
+            ) : (
+              filteredTrips.map((trip) => (
+                <div
+                  key={trip.id}
+                  className="bg-white/5 border border-white/10 rounded-lg p-4 space-y-3 hover:bg-white/[0.08] transition"
+                >
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <p className="text-slate-400 text-xs uppercase">Rota</p>
+                      <p className="text-white text-sm font-medium">
+                        {trip.route?.origin} → {trip.route?.destination}
+                      </p>
+                    </div>
+                    <Badge
+                      className={
+                        trip.available_seats && trip.available_seats > 0
+                          ? "bg-emerald-500/20 text-emerald-400 text-xs"
+                          : "bg-red-500/20 text-red-400 text-xs"
+                      }
+                    >
+                      {trip.available_seats && trip.available_seats > 0 ? "Disponível" : "Esgotado"}
+                    </Badge>
+                  </div>
+
+                  <div className="border-t border-white/10 pt-2 space-y-2">
+                    <div>
+                      <p className="text-slate-400 text-xs uppercase">Data e Hora</p>
+                      <p className="text-white text-sm font-medium">
+                        {trip.departure_date} às {trip.departure_time}
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <p className="text-slate-400 text-xs uppercase">Preço</p>
+                        <p className="text-white text-sm font-semibold">{trip.price} Kz</p>
+                      </div>
+                      <div>
+                        <p className="text-slate-400 text-xs uppercase">Assentos</p>
+                        <p className="text-white text-sm font-semibold">{trip.total_seats}</p>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <p className="text-slate-400 text-xs uppercase">Disponíveis</p>
+                        <p className="text-white text-sm font-semibold">{trip.available_seats || 0}</p>
+                      </div>
+                      <div>
+                        <p className="text-slate-400 text-xs uppercase">Status</p>
+                        <p className="text-white text-sm font-semibold">
+                          {trip.available_seats && trip.available_seats > 0 ? "Ativo" : "Cheio"}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 border-t border-white/10 pt-3">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="flex-1 border-blue-500/20 text-blue-400 hover:bg-blue-500/10 text-xs"
+                      onClick={() => {
+                        setSelectedTrip(trip);
+                        setShowDetails(true);
+                      }}
+                    >
+                      <Eye className="w-3 h-3 mr-1" />
+                      Ver
+                    </Button>
+
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="flex-1 border-red-500/20 text-red-400 hover:bg-red-500/10 text-xs"
+                      disabled={processing === trip.id}
+                      onClick={() => {
+                        setDeleteTarget(trip.id);
+                        setShowDeleteConfirm(true);
+                      }}
+                    >
+                      {processing === trip.id ? (
+                        <Loader2 className="w-3 h-3 animate-spin" />
+                      ) : (
+                        <Trash2 className="w-3 h-3" />
+                      )}
+                    </Button>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </CardContent>
       </Card>

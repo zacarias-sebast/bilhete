@@ -22,29 +22,49 @@ const photos = [
 ];
 
 const styles = `
-  .gallery-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; padding: 1rem 0; }
+  .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; padding: 1rem 0; }
+  @media (max-width: 480px) {
+    .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  }
+  @media (min-width: 481px) and (max-width: 768px) {
+    .gallery-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  }
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .gallery-grid { grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  }
+  @media (min-width: 1025px) {
+    .gallery-grid { grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  }
   .photo-card { position: relative; aspect-ratio: 1; overflow: hidden; border-radius: 12px; cursor: pointer; border: 0.5px solid rgba(148, 163, 184, 0.2); }
   .photo-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; display: block; }
   .photo-card:hover img { transform: scale(1.08); }
   .photo-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.1) 50%, transparent 100%); opacity: 0; transition: opacity 0.3s ease; display: flex; align-items: flex-end; padding: 12px; }
   .photo-card:hover .photo-overlay { opacity: 1; }
-  .overlay-title { color: #fff; font-size: 13px; font-weight: 500; margin: 0 0 4px; }
+  .overlay-title { color: #fff; font-size: 13px; font-weight: 500; margin: 0 0 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .overlay-badge { font-size: 11px; color: rgba(255,255,255,0.85); background: rgba(59, 130, 246, 0.3); padding: 2px 8px; border-radius: 99px; display: inline-block; }
-  .lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: flex; align-items: center; justify-content: center; z-index: 999; }
+  .lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: flex; align-items: center; justify-content: center; z-index: 999; padding: 1rem; }
   .lb-inner { position: relative; max-width: 90vw; max-height: 90vh; display: flex; flex-direction: column; align-items: center; }
   .lb-inner img { max-height: 75vh; max-width: 85vw; object-fit: contain; border-radius: 8px; }
-  .lb-close { position: absolute; top: -40px; right: 0; background: rgba(255,255,255,0.15); border: none; color: #fff; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; }
+  .lb-close { position: absolute; top: 0; right: 0; background: rgba(255,255,255,0.15); border: none; color: #fff; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; }
   .lb-close:hover { background: rgba(255,255,255,0.25); }
   .lb-nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.15); border: none; color: #fff; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; }
   .lb-nav:hover { background: rgba(255,255,255,0.25); }
-  .lb-prev { left: -56px; }
-  .lb-next { right: -56px; }
+  .lb-prev { left: 16px; }
+  .lb-next { right: 16px; }
+  @media (max-width: 640px) {
+    .lb-prev { left: 8px; }
+    .lb-next { right: 8px; }
+  }
   .lb-info { margin-top: 14px; text-align: center; }
   .lb-info h2 { color: #fff; font-size: 16px; font-weight: 500; margin: 0 0 6px; }
   .lb-badge { font-size: 12px; color: rgba(255,255,255,0.75); background: rgba(59, 130, 246, 0.3); padding: 3px 10px; border-radius: 99px; }
   .page-header { margin-bottom: 2rem; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
   .page-header h1 { font-size: 32px; font-weight: 700; color: #fff; margin: 0 0 8px; background: linear-gradient(to right, #60a5fa, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
   .page-header p { font-size: 16px; color: #cbd5e1; margin: 0; }
+  @media (max-width: 640px) {
+    .page-header h1 { font-size: 24px; }
+    .page-header p { font-size: 14px; }
+  }
 `;
 
 const PhotoGallery = () => {

@@ -27,23 +27,46 @@ export function AuthButton() {
     const supabase = createClient();
 
     async function checkAuth() {
-      const { data } = await supabase.auth.getUser();
-      const currentUser = data?.user ?? null;
-      setUser(currentUser);
+      try {
+        const { data, error } = await supabase.auth.getUser();
+        const currentUser = data?.user ?? null;
+        
+        // Handle refresh token errors gracefully
+        if (error?.message?.includes("Refresh Token Not Found")) {
+          // Session is invalid, sign out
+          await supabase.auth.signOut();
+          setUser(null);
+          setIsAdmin(false);
+          setLoading(false);
+          return;
+        }
 
-      if (currentUser) {
-        const { data: profile } = await supabase
-          .from("profile")
-          .select("full_name")
-          .eq("id", currentUser.id)
-          .single();
+        setUser(currentUser);
 
-        const fullName = (profile?.full_name || "").toLowerCase().trim();
-        setIsAdmin(ALLOWED_ADMINS.includes(fullName));
-      } else {
+        if (currentUser) {
+          try {
+            const { data: profile } = await supabase
+              .from("profile")
+              .select("full_name")
+              .eq("id", currentUser.id)
+              .single();
+
+            const fullName = (profile?.full_name || "").toLowerCase().trim();
+            setIsAdmin(ALLOWED_ADMINS.includes(fullName));
+          } catch (profileError) {
+            console.error("Error fetching profile:", profileError);
+            setIsAdmin(false);
+          }
+        } else {
+          setIsAdmin(false);
+        }
+      } catch (authError) {
+        console.error("Auth check error:", authError);
+        setUser(null);
         setIsAdmin(false);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     }
 
     checkAuth();

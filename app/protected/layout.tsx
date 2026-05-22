@@ -6,13 +6,19 @@ import { Loader2 } from "lucide-react";
 async function ProtectedGuard({ children }: { children: React.ReactNode }) {
   const supabase = await createClient();
 
-  const { data: { user } } = await supabase.auth.getUser();
+  try {
+    const { data: { user }, error } = await supabase.auth.getUser();
 
-  if (!user) {
+    // Handle refresh token errors - redirect to login
+    if (error?.message?.includes("Refresh Token Not Found") || !user) {
+      redirect("/auth/login");
+    }
+
+    return <>{children}</>;
+  } catch (error) {
+    console.error("Protected route error:", error);
     redirect("/auth/login");
   }
-
-  return <>{children}</>;
 }
 
 export default function ProtectedLayout({

@@ -20,6 +20,7 @@ import {
   Download,
   Eye,
   Plus,
+  Edit,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -358,7 +359,8 @@ export default function AdminRoutesPage() {
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
-          <div className="overflow-x-auto">
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="border-b border-white/10 bg-white/5">
@@ -487,6 +489,98 @@ export default function AdminRoutesPage() {
                 )}
               </tbody>
             </table>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="md:hidden space-y-3 p-4">
+            {filteredRoutes.length === 0 ? (
+              <div className="text-center py-8 text-slate-400">
+                Nenhuma rota encontrada
+              </div>
+            ) : (
+              filteredRoutes.map((route) => (
+                <div
+                  key={route.id}
+                  className="bg-white/5 border border-white/10 rounded-lg p-4 space-y-3 hover:bg-white/[0.08] transition"
+                >
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <p className="text-slate-400 text-xs uppercase">Rota</p>
+                      <p className="text-white text-sm font-medium">
+                        {route.origin} → {route.destination}
+                      </p>
+                    </div>
+                    <Badge
+                      className={
+                        route.active
+                          ? "bg-emerald-500/20 text-emerald-400 text-xs"
+                          : "bg-red-500/20 text-red-400 text-xs"
+                      }
+                    >
+                      {route.active ? "Ativa" : "Inativa"}
+                    </Badge>
+                  </div>
+
+                  <div className="border-t border-white/10 pt-2 space-y-2">
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <p className="text-slate-400 text-xs uppercase">Distância</p>
+                        <p className="text-white text-sm font-semibold">
+                          {route.distance_km ? `${route.distance_km} km` : "---"}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-slate-400 text-xs uppercase">Duração</p>
+                        <p className="text-white text-sm font-semibold">
+                          {route.estimated_duration || "---"}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div>
+                      <p className="text-slate-400 text-xs uppercase">Data Criação</p>
+                      <p className="text-white text-sm">
+                        {route.created_at
+                          ? new Date(route.created_at).toLocaleDateString("pt-PT")
+                          : "---"}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 border-t border-white/10 pt-3">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="flex-1 border-blue-500/20 text-blue-400 hover:bg-blue-500/10 text-xs"
+                      onClick={() => {
+                        setSelectedRoute(route);
+                        setShowDetails(true);
+                      }}
+                    >
+                      <Eye className="w-3 h-3 mr-1" />
+                      Ver
+                    </Button>
+
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="flex-1 border-red-500/20 text-red-400 hover:bg-red-500/10 text-xs"
+                      disabled={processing === route.id}
+                      onClick={() => {
+                        setDeleteTarget(route.id);
+                        setShowDeleteConfirm(true);
+                      }}
+                    >
+                      {processing === route.id ? (
+                        <Loader2 className="w-3 h-3 animate-spin" />
+                      ) : (
+                        <Trash2 className="w-3 h-3" />
+                      )}
+                    </Button>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </CardContent>
       </Card>

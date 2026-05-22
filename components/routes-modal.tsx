@@ -53,12 +53,12 @@ export default function RoutesModal() {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-slate-950 border-white/10 text-white shadow-2xl">
+      <DialogContent className="max-w-[calc(100%-2rem)] sm:max-w-2xl lg:max-w-4xl max-h-[90vh] overflow-y-auto bg-slate-950 border-white/10 text-white shadow-2xl">
         {/* Efeito de brilho dentro do modal */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-50" />
         
         <DialogHeader>
-          <DialogTitle className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-300">
+          <DialogTitle className="text-2xl sm:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-300">
             Explorar Rotas
           </DialogTitle>
           <DialogDescription className="sr-only">
@@ -68,13 +68,13 @@ export default function RoutesModal() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             <Input 
               placeholder="Para onde quer ir?" 
-              className="pl-10 bg-white/5 border-white/10 focus:ring-blue-500 focus:border-blue-500 text-white"
+              className="pl-10 bg-white/5 border-white/10 focus:ring-blue-500 focus:border-blue-500 text-white text-sm sm:text-base"
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
         </DialogHeader>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-3 sm:gap-4 mt-6">
           {filteredRoutes.map((route) => (
             <Card key={route.id} className="bg-white/5 border-white/10 hover:border-blue-500/50 transition-all duration-300 group overflow-hidden">
               <CardHeader className="pb-2 space-y-4">

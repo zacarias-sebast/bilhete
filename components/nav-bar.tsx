@@ -8,6 +8,7 @@ import { AuthButton } from "./auth-button";
 import { Button } from "./ui/button";
 import { createClient } from "@/lib/supabase/server";
 import { LayoutDashboard } from "lucide-react";
+import { MobileMenu } from "./mobile-menu";
 
 export async function NavBar() {
   return (
@@ -27,15 +28,16 @@ export async function NavBar() {
                   style={{ height: "auto" }}
                 />
             </div>
-            <span className="font-bold" suppressHydrationWarning>Morvic</span>
+            <span className="font-bold hidden sm:inline" suppressHydrationWarning>Morvic</span>
           </Link>
           
-          <div className="flex items-center gap-2">
+          <div className="hidden md:flex items-center gap-2">
             <Link href="/protected/trip" className="hover:text-blue-400 transition-colors" prefetch={false} suppressHydrationWarning>Viagens</Link>
           </div>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-4">
+          <MobileMenu items={[{ href: "/protected/trip", label: "Viagens" }]} />
           {!hasEnvVars ? (
             <EnvVarWarning />
           ) : (

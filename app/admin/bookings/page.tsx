@@ -352,7 +352,8 @@ export default function AdminBookingsPage() {
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
-          <div className="overflow-x-auto">
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="border-b border-white/10 bg-white/5">
@@ -493,6 +494,127 @@ export default function AdminBookingsPage() {
                 )}
               </tbody>
             </table>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="md:hidden space-y-3 p-4">
+            {filteredBookings.length === 0 ? (
+              <div className="text-center py-8 text-slate-400">
+                Nenhuma reserva encontrada
+              </div>
+            ) : (
+              filteredBookings.map((booking) => (
+                <div
+                  key={booking.id}
+                  className="bg-white/5 border border-white/10 rounded-lg p-4 space-y-3 hover:bg-white/[0.08] transition"
+                >
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <p className="font-medium text-white text-sm">
+                        {booking.profile?.full_name || "---"}
+                      </p>
+                      <p className="text-slate-400 text-xs">
+                        {booking.profile?.phone || "---"}
+                      </p>
+                    </div>
+                    <Badge
+                      className={
+                        booking.status === "confirmado"
+                          ? "bg-blue-500/20 text-blue-400 text-xs"
+                          : booking.status === "pendente"
+                            ? "bg-yellow-500/20 text-yellow-400 text-xs"
+                            : "bg-red-500/20 text-red-400 text-xs"
+                      }
+                    >
+                      {booking.status}
+                    </Badge>
+                  </div>
+
+                  <div className="border-t border-white/10 pt-2 space-y-2">
+                    <div>
+                      <p className="text-slate-400 text-xs uppercase">Rota</p>
+                      <p className="text-white text-sm font-medium">
+                        {booking.trip?.route?.origin} → {booking.trip?.route?.destination}
+                      </p>
+                      <p className="text-slate-400 text-xs">
+                        {booking.trip?.departure_date} às {booking.trip?.departure_time}
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <p className="text-slate-400 text-xs uppercase">Assento</p>
+                        <p className="text-white text-sm font-semibold">Nº {booking.seat_number}</p>
+                      </div>
+                      <div>
+                        <p className="text-slate-400 text-xs uppercase">Valor</p>
+                        <p className="text-white text-sm font-semibold">{booking.amount_to_pay} Kz</p>
+                      </div>
+                    </div>
+
+                    <div>
+                      <p className="text-slate-400 text-xs uppercase">Data</p>
+                      <p className="text-white text-sm">
+                        {booking.created_at
+                          ? new Date(booking.created_at).toLocaleDateString("pt-PT")
+                          : "---"}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 border-t border-white/10 pt-3">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="flex-1 border-blue-500/20 text-blue-400 hover:bg-blue-500/10 text-xs"
+                      onClick={() => {
+                        setSelectedBooking(booking);
+                        setShowDetails(true);
+                      }}
+                    >
+                      <Eye className="w-3 h-3 mr-1" />
+                      Ver
+                    </Button>
+
+                    {booking.status !== "confirmado" && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="flex-1 border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/10 text-xs"
+                        disabled={processing === booking.id}
+                        onClick={() => validateBooking(booking.id)}
+                      >
+                        {processing === booking.id ? (
+                          <Loader2 className="w-3 h-3 animate-spin mr-1" />
+                        ) : (
+                          <CheckCircle2 className="w-3 h-3 mr-1" />
+                        )}
+                        Confirmar
+                      </Button>
+                    )}
+
+                    {booking.status !== "cancelado" && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="flex-1 border-red-500/20 text-red-400 hover:bg-red-500/10 text-xs"
+                        disabled={processing === booking.id}
+                        onClick={() => {
+                          setDeleteTarget(booking.id);
+                          setShowDeleteConfirm(true);
+                        }}
+                      >
+                        {processing === booking.id ? (
+                          <Loader2 className="w-3 h-3 animate-spin" />
+                        ) : (
+                          <Trash2 className="w-3 h-3" />
+                        )}
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </CardContent>
       </Card>
