@@ -176,7 +176,7 @@ export default function TripPage(){
                   disabled={trip.available_seats === 0 || trip.status !== "Disponivel"}
                   className={`w-full ${trip.available_seats === 0 ? "bg-slate-800 text-slate-500 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700" }`} >
                   {trip.available_seats === 0 ? (<span>Esgotado</span>) : (
-                    <Link href={`/protected/trip/${trip.id}/reserve/`}>Reservar Lugar</Link>)}
+                    <Link href={`/protected/trip/${trip.id}/reserve`}>Reservar Lugar</Link>)}
                 </Button>
               </CardContent>
             </Card>

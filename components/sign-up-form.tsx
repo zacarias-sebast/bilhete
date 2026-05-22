@@ -46,11 +46,24 @@ export function SignUpForm({
         email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/protected`,
+          emailRedirectTo: `${window.location.origin}/auth/confirm`,
         },
       });
       if (error) throw error;
-      router.push("/auth/sign-up-success");
+
+      // Auto-login após cadastro bem-sucedido
+      const { error: loginError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (!loginError) {
+        // Login bem-sucedido, redirecionar para a jornada normal
+        router.push("/auth/sign-up-success");
+      } else {
+        // Se o login automático falhar, mostrar a página de sucesso com instruções
+        router.push("/auth/sign-up-success");
+      }
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "An error occurred");
     } finally {

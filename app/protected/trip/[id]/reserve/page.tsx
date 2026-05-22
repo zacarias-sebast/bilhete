@@ -65,7 +65,7 @@ export default function ReserveTripPage() {
         data: { user },
       } = await supabase.auth.getUser();
 
-      if (user) {
+      if (user && user.id) {
         const { data: profileData } = await supabase
           .from("profile")
           .select("full_name, phone, document_number")
@@ -80,6 +80,10 @@ export default function ReserveTripPage() {
           }
           setProfile(profileData as UserProfile);
         }
+      } else {
+        toast.error("Sessão expirada. Por favor, faça login novamente.");
+        router.push("/auth/login");
+        return;
       }
 
       // 🪑 Buscar assentos ocupados (apenas confirmados ou pendentes)

@@ -39,7 +39,20 @@ export function LoginForm({
         email,
         password,
       });
-      if (error) throw error;
+
+      if (error) {
+        // Mensagens de erro mais claras
+        if (error.message.includes("Invalid login credentials")) {
+          throw new Error("Email ou senha incorretos. Verifique seus dados e tente novamente.");
+        } else if (error.message.includes("Email not confirmed")) {
+          throw new Error("Por favor, confirme seu email antes de fazer login. Verifique sua caixa de entrada.");
+        }
+        throw error;
+      }
+
+      if (!authData?.user) {
+        throw new Error("Falha ao autenticar. Tente novamente.");
+      }
 
       let isAdmin = false;
       const userEmail = email.toLowerCase();
@@ -47,7 +60,7 @@ export function LoginForm({
       
       if (ALLOWED_EMAILS.includes(userEmail)) {
         isAdmin = true;
-      } else if (authData?.user) {
+      } else if (authData.user) {
         const { data: profile } = await supabase
           .from("profile")
           .select("full_name")
@@ -75,7 +88,7 @@ export function LoginForm({
         router.push("/protected/trip");
       }
     } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "An error occurred");
+      setError(error instanceof Error ? error.message : "Um erro ocorreu. Tente novamente.");
     } finally {
       setIsLoading(false);
     }
