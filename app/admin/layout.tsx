@@ -3,6 +3,8 @@ import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { Loader2, LayoutDashboard, Map, Ticket, Users, ArrowLeft, BookOpen, Menu } from "lucide-react";
 import Link from "next/link";
+
+
 // Adiciona esta linha junto aos outros imports no topo
 import { Button } from "@/components/ui/button";
 import {
@@ -139,9 +141,11 @@ async function AdminAuthCheck({ children }: { children: React.ReactNode }) {
 
     return <>{children}</>;
   } catch (error) {
-  if (isRedirectError(error)) throw error; // ← adiciona esta linha
+  if (error instanceof Error && (error as any).digest?.startsWith("NEXT_REDIRECT")) {
+    throw error; // ✅ deixa o redirect passar
+  }
   console.error("Admin auth check error:", error);
-  redirect("/login");
+  redirect("/auth/login");
   }
 }
 
